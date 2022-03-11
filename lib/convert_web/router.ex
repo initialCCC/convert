@@ -7,6 +7,8 @@ defmodule ConvertWeb.Router do
 
   scope "/api", ConvertWeb do
     pipe_through :api
+
+    post "/", VideoController, :create
   end
 
   # Enables LiveDashboard only for development
