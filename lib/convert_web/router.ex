@@ -2,7 +2,7 @@ defmodule ConvertWeb.Router do
   use ConvertWeb, :router
 
   pipeline :api do
-    plug :accepts, ["json"]
+    plug :accepts, ["video"]
   end
 
   scope "/api", ConvertWeb do
