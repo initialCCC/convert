@@ -10,19 +10,18 @@ defmodule Convert.JobSupervisor do
     {:ok, _} = DynamicSupervisor.start_link(__MODULE__, init_arg, name: __MODULE__)
   end
 
-  def start_job do
+  def start_job(uploaded_file_path) do
     job_id = generate_job_id()
 
     job_spec = %{
       id: job_id,
       type: :worker,
-      start: {Convert.Job, :start_link, [job_id]},
+      start: {Convert.Job, :start_link, [job_id, uploaded_file_path]},
       restart: :transient
     }
 
     {:ok, job_pid} = DynamicSupervisor.start_child(__MODULE__, job_spec)
-
-    {job_id, job_pid}
+    {job_pid, job_id}
   end
 
   defp generate_job_id do

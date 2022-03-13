@@ -4,6 +4,8 @@
 # If you run "mix test --cover", coverage assets end up here.
 /cover/
 
+/samples/
+/converted_files/
 /.elixir_ls/
 
 # The directory Mix downloads your dependencies sources to.

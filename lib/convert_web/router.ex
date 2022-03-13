@@ -5,10 +5,11 @@ defmodule ConvertWeb.Router do
     plug :accepts, ["video"]
   end
 
-  scope "/api", ConvertWeb do
+  scope "/", ConvertWeb do
     pipe_through :api
 
     post "/", VideoController, :create
+    get "/:job_id", VideoController, :show
   end
 
   # Enables LiveDashboard only for development
