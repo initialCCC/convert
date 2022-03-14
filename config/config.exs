@@ -7,6 +7,10 @@
 # General application configuration
 import Config
 
+config :convert,
+  ffmpeg_path: System.find_executable("ffmpeg"),
+  converted_files_path: Path.expand("./converted_files/")
+
 # Configures the endpoint
 config :convert, ConvertWeb.Endpoint,
   url: [host: "localhost"],

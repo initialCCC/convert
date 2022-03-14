@@ -1,18 +1,9 @@
 defmodule Convert.Job do
-  defmodule State do
-    defstruct [:port, :processed_path, :uploaded_path]
-  end
-
   use GenServer
-  @ffmpeg_path System.find_executable("ffmpeg")
-  @converted_files_path Path.expand("./converted_files/")
+  @ffmpeg_path Application.compile_env!(:convert, :ffmpeg_path)
 
-  def init({job_id, uploaded_file_path}) do
-    state = %Convert.Job.State{
-      processed_path: Path.join(@converted_files_path, [job_id, ".mp4"]),
-      uploaded_path: uploaded_file_path
-    }
-    {:ok, state, {:continue, []}}
+  def init(args) do
+    {:ok, Convert.Job.State.new(args), {:continue, []}}
   end
 
   def handle_continue(_, state) do
@@ -36,7 +27,7 @@ defmodule Convert.Job do
     %{port: port, processed_path: processed_path} = state
 
     with nil <- Port.info(port), true <- File.exists?(processed_path) do
-      {:stop, :normal, {:completed, processed_path}, state}
+      {:stop, :normal, handle_file(processed_path), state}
     else
       false -> {:stop, :normal, :failed, state}
 
@@ -46,11 +37,16 @@ defmodule Convert.Job do
 
   def start_link(job_id, uploaded_file_path) do
     name = {:via, Registry, {Convert.JobTracer, job_id}}
-
     GenServer.start_link(__MODULE__, {job_id, uploaded_file_path}, name: name)
   end
 
   def job_status(job_pid) do
     GenServer.call(job_pid, :status)
+  end
+
+  defp handle_file(file_path) do
+    bin = File.read!(file_path)
+    :ok = File.rm!(file_path)
+    {:binary, bin}
   end
 end

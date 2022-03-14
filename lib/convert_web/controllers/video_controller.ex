@@ -10,9 +10,11 @@ defmodule ConvertWeb.VideoController do
 
   def show(conn, %{"job_id" => job_id}) do
     case Convert.JobTracer.job_status(job_id) do
-      {:completed, processed_path} -> send_file(conn, 200, processed_path)
+      {:binary, content} ->
+        send_download(conn, {:binary, content}, filename: "converted.mp4")
 
-      status -> json(conn, %{"job_status" => format_status(status)})
+      status ->
+        json(conn, %{"job_status" => format_status(status)})
     end
   end
 

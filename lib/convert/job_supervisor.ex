@@ -6,7 +6,6 @@ defmodule Convert.JobSupervisor do
   end
 
   def start_link(init_arg) do
-    IO.puts "starting jobs supervisor"
     {:ok, _} = DynamicSupervisor.start_link(__MODULE__, init_arg, name: __MODULE__)
   end
 
@@ -26,5 +25,9 @@ defmodule Convert.JobSupervisor do
 
   defp generate_job_id do
     Base.encode16(:crypto.strong_rand_bytes(16))
+  end
+
+  def get_children do
+    DynamicSupervisor.which_children(__MODULE__)
   end
 end

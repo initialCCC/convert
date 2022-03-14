@@ -7,7 +7,7 @@
 /samples/
 /converted_files/
 /.elixir_ls/
-
+/rel/
 # The directory Mix downloads your dependencies sources to.
 /deps/
 
