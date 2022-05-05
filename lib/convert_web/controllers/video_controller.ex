@@ -18,7 +18,6 @@ defmodule ConvertWeb.VideoController do
     end
   end
 
-  defp format_status(:false), do: "invalid job id"
   defp format_status(:failed), do: "failed converting file"
   defp format_status(:pending), do: "file still converting"
   defp format_status(:not_found), do: "file not found in the system"

@@ -9,12 +9,11 @@ defmodule Convert.Job do
   def handle_continue(_, state) do
     port = Port.open(
       {:spawn_executable, @ffmpeg_path},
-      [:binary, args: [
-        "-loglevel",
-        "quiet",
+      [:binary, :nouse_stdio, args: [
         "-nostdin",
-        "-i",
-        state.uploaded_path,
+        "-loglevel", "quiet",
+        "-f", "webm",
+        "-i", state.uploaded_path,
         state.processed_path
         ]
       ]
