@@ -9,10 +9,15 @@ To start your Phoenix server:
 
 The API currently supports two endpoints:
 * For uploading a video
+
 post /
+
 * To get the status of a video
+
 get /:job_id
 
 
 ## TODO
 Add a resource pool
+Add authentication
+Add a priority queue
