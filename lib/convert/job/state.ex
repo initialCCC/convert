@@ -4,7 +4,7 @@ defmodule Convert.Job.State do
 
   def new({job_id, uploaded_file_path}) do
     %__MODULE__{
-      processed_path: Path.join(@converted_files_path, [job_id, ".mp4"]),
+      processed_path: Path.join(@converted_files_path, job_id),
       uploaded_path: uploaded_file_path
     }
   end

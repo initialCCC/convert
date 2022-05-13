@@ -10,11 +10,10 @@ defmodule Convert.Job do
     port = Port.open(
       {:spawn_executable, @ffmpeg_path},
       [:binary, :nouse_stdio, args: [
-        "-nostdin",
-        "-loglevel", "quiet",
+        "-hide_banner", "-nostdin", "-loglevel", "quiet",
         "-f", "webm",
         "-i", state.uploaded_path,
-        state.processed_path
+        "-f", "mp4", state.processed_path
         ]
       ]
     )
