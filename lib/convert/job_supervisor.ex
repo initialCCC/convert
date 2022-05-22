@@ -27,7 +27,7 @@ defmodule Convert.JobSupervisor do
     Base.encode16(:crypto.strong_rand_bytes(16))
   end
 
-  def get_children do
-    DynamicSupervisor.which_children(__MODULE__)
+  def active_children do
+    DynamicSupervisor.count_children(__MODULE__).active
   end
 end

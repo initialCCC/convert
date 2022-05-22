@@ -7,6 +7,7 @@ defmodule Convert.Job do
   end
 
   def handle_continue(_, state) do
+    Process.flag(:trap_exit, true)
     port = Port.open(
       {:spawn_executable, @ffmpeg_path},
       [:binary, :nouse_stdio, args: [
@@ -31,6 +32,15 @@ defmodule Convert.Job do
 
       _ -> {:reply, :pending, state}
     end
+  end
+
+  def handle_info({:EXIT, _port, :normal}, state) do
+    {:noreply, state}
+  end
+
+  def handle_info(message, state) do
+    IO.inspect(message, label: "unknown message in job")
+    {:noreply, state}
   end
 
   def start_link(job_id, uploaded_file_path) do

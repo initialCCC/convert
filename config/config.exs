@@ -8,6 +8,7 @@
 import Config
 
 config :convert,
+  capacity: 3, # maximum number of ffmpeg processes that can run at a time
   ffmpeg_path: System.find_executable("ffmpeg"),
   converted_files_path: Path.expand("./converted_files/")
 

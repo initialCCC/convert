@@ -9,6 +9,8 @@ defmodule Convert.Application do
 
       {Phoenix.PubSub, name: Convert.PubSub},
 
+      {JobLimiter, []},
+
       ConvertWeb.Endpoint,
 
       Convert.JobSupervisor,
