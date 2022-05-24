@@ -16,7 +16,7 @@ defmodule Convert.Store do
   end
 
   @doc """
-  Handle down messages from controllers. (might be problematic if many client query it)
+  Handle down messages from controllers. (might be problematic if many clients query it)
   """
   @impl true
   def handle_info({:DOWN, ref, _, _pid, :normal}, state) do
