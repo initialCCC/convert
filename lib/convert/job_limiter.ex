@@ -16,7 +16,7 @@ defmodule JobLimiter do
   @impl true
   def handle_call(:system_available?, {from_pid, _ref}, %{uploads: uploads} = state) do
     # * Videos that are getting uploaded are part of the workload
-    current_workload = Kernel.map_size(uploads) + JobSupervisor.active_children
+    current_workload = Kernel.map_size(uploads) + JobSupervisor.active_children()
 
     if current_workload < @max_jobs do
       mref = Process.monitor(from_pid)

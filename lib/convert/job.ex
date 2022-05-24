@@ -1,6 +1,6 @@
 defmodule Convert.Job do
   use GenServer
-  @ffmpeg_path Application.compile_env!(:convert, :ffmpeg_path) || raise "FFMPEG not found !"
+  @ffmpeg_path Application.compile_env!(:convert, :ffmpeg_path) || raise("FFMPEG not found !")
 
   @impl true
   def init(args) do
@@ -9,16 +9,29 @@ defmodule Convert.Job do
 
   @impl true
   def handle_continue(_, state) do
-    port = Port.open(
-      {:spawn_executable, @ffmpeg_path},
-      [:binary, :nouse_stdio, :exit_status, args: [
-        "-hide_banner", "-nostdin", "-y", "-loglevel", "quiet",
-        "-f", "webm",
-        "-i", state.uploaded_path,
-        "-f", "mp4", state.processed_path
+    port =
+      Port.open(
+        {:spawn_executable, @ffmpeg_path},
+        [
+          :binary,
+          :nouse_stdio,
+          :exit_status,
+          args: [
+            "-hide_banner",
+            "-nostdin",
+            "-y",
+            "-loglevel",
+            "quiet",
+            "-f",
+            "webm",
+            "-i",
+            state.uploaded_path,
+            "-f",
+            "mp4",
+            state.processed_path
+          ]
         ]
-      ]
-    )
+      )
 
     {:noreply, %{state | port: port}}
   end

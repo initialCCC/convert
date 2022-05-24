@@ -36,7 +36,7 @@ defmodule Convert.JobSupervisor do
         generate_job_id()
 
       {:error, posix_err} ->
-        raise("error while creating file #{inspect posix_err}")
+        raise("error while creating file #{inspect(posix_err)}")
     end
   end
 

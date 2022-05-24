@@ -7,7 +7,7 @@ defmodule VideoReader do
   end
 
   def parse(conn, "multipart", subtype, headers, opts) do
-    if JobLimiter.system_available? do
+    if JobLimiter.system_available?() do
       opts = MULTIPART.init(opts)
       MULTIPART.parse(conn, "multipart", subtype, headers, opts)
     else

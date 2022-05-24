@@ -19,10 +19,7 @@ defmodule Convert.Store do
   Handle down messages from controllers. (might be problematic if many client query it)
   """
   @impl true
-  def handle_info({:DOWN, ref, _, pid, :normal}, state) do
-    IO.puts "Received down signal ref : #{inspect ref} from pid #{inspect pid}"
-    IO.puts "Sleeping before deleting"
-    Process.sleep(2000)
+  def handle_info({:DOWN, ref, _, _pid, :normal}, state) do
     %{^ref => job_id} = state
 
     [{_, processed_path}] = :ets.lookup(@table, job_id)
@@ -51,8 +48,10 @@ defmodule Convert.Store do
   def from_store(job_id) do
     case :ets.lookup(@table, job_id) do
       [{_job_id, processed_path}] ->
-        track_process(job_id) # the controller's process
+        # the controller's process
+        track_process(job_id)
         {:path_to_file, processed_path}
+
       _ ->
         nil
     end

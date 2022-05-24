@@ -6,17 +6,11 @@ defmodule Convert.Application do
   def start(_type, _args) do
     children = [
       ConvertWeb.Telemetry,
-
       {Phoenix.PubSub, name: Convert.PubSub},
-
       {JobLimiter, []},
-
       {Convert.Store, []},
-
       ConvertWeb.Endpoint,
-
       Convert.JobSupervisor,
-
       {Registry, keys: :unique, name: Convert.JobTracer}
     ]
 
@@ -34,6 +28,7 @@ defmodule Convert.Application do
       :ok
     end
   end
+
   # Tell Phoenix to update the endpoint configuration
   # whenever the application is updated.
   @impl true
