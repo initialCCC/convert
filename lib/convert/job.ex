@@ -1,6 +1,6 @@
 defmodule Convert.Job do
   use GenServer
-  @ffmpeg_path Application.compile_env!(:convert, :ffmpeg_path)
+  @ffmpeg_path Application.compile_env!(:convert, :ffmpeg_path) || raise "FFMPEG not found !"
 
   @impl true
   def init(args) do
@@ -24,21 +24,13 @@ defmodule Convert.Job do
   end
 
   @impl true
-  def handle_call(:status, _, state) do
-    %{port: port, processed_path: processed_path} = state
-
-    with nil <- Port.info(port), true <- File.exists?(processed_path) do
-      {:stop, :normal, handle_file(processed_path), state}
-    else
-      false -> {:stop, :normal, :failed, state}
-
-      _ -> {:reply, :pending, state}
-    end
+  def handle_info({_port, {:exit_status, 0}}, state) do
+    {:stop, :normal, state}
   end
 
   @impl true
-  def handle_info({_port, {:exit_status, _exit_status}}, state) do
-    {:noreply, state}
+  def handle_info({_port, {:exit_status, exit_status}}, state) do
+    {:stop, {:shutdown, exit_status}, state}
   end
 
   @impl true
@@ -47,18 +39,19 @@ defmodule Convert.Job do
     {:noreply, state}
   end
 
+  @impl true
+  def terminate(:normal, %{processed_path: processed_path}) do
+    job_id = Path.basename(processed_path)
+    :ets.insert(:store, {job_id, processed_path})
+  end
+
+  def terminate({_shutdown, _exit_status}, _) do
+    ### SOME LOGGING
+    :ok
+  end
+
   def start_link(job_id, processed_path, uploaded_file_path) do
     name = {:via, Registry, {Convert.JobTracer, job_id}}
     GenServer.start_link(__MODULE__, {processed_path, uploaded_file_path}, name: name)
-  end
-
-  def job_status(job_pid) do
-    GenServer.call(job_pid, :status)
-  end
-
-  defp handle_file(file_path) do
-    bin = File.read!(file_path)
-    :ok = File.rm!(file_path)
-    {:binary, bin}
   end
 end

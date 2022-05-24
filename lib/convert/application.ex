@@ -11,6 +11,8 @@ defmodule Convert.Application do
 
       {JobLimiter, []},
 
+      {Convert.Store, []},
+
       ConvertWeb.Endpoint,
 
       Convert.JobSupervisor,
