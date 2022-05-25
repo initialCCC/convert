@@ -18,6 +18,4 @@ get /:job_id
 
 
 ## TODO
-Add a resource pool
 Add authentication
-Add a priority queue
