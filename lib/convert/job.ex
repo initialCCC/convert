@@ -1,6 +1,7 @@
 defmodule Convert.Job do
   use GenServer
   @ffmpeg_path Application.compile_env!(:convert, :ffmpeg_path) || raise("FFMPEG not found !")
+  require Logger
 
   @impl true
   def init(args) do
@@ -58,9 +59,10 @@ defmodule Convert.Job do
     :ets.insert(:store, {job_id, processed_path})
   end
 
-  def terminate({_shutdown, _exit_status}, _) do
-    ### SOME LOGGING
-    :ok
+  def terminate({_shutdown, exit_status}, _) do
+    if exit_status > 1 do
+      Logger.warning("Terminating with exit status #{exit_status}")
+    end
   end
 
   def start_link(job_id, processed_path, uploaded_file_path) do

@@ -1,6 +1,7 @@
 defmodule Convert.Store do
   use GenServer
   @table :store
+  require Logger
 
   @impl true
   def init(_opts) do
@@ -10,14 +11,11 @@ defmodule Convert.Store do
   end
 
   @impl true
-  def handle_cast({:track_process, pid, job_id}, state) do
+  def handle_call({:track_process, job_id}, {pid, _}, state) do
     ref = Process.monitor(pid)
-    {:noreply, Map.put_new(state, ref, job_id)}
+    {:reply, :ok, Map.put_new(state, ref, job_id)}
   end
 
-  @doc """
-  Handle down messages from controllers. (might be problematic if many clients query it)
-  """
   @impl true
   def handle_info({:DOWN, ref, _, _pid, :normal}, state) do
     %{^ref => job_id} = state
@@ -32,8 +30,7 @@ defmodule Convert.Store do
   end
 
   @impl true
-  def handle_info({_, _ref, _, _, reason}, state) do
-    IO.inspect(reason, label: "crashed with reason")
+  def handle_info({_, _ref, _, _, _reason}, state) do
     {:noreply, state}
   end
 
@@ -49,7 +46,7 @@ defmodule Convert.Store do
     case :ets.lookup(@table, job_id) do
       [{_job_id, processed_path}] ->
         # the controller's process
-        track_process(job_id)
+        :ok = track_process(job_id)
         {:path_to_file, processed_path}
 
       _ ->
@@ -58,6 +55,6 @@ defmodule Convert.Store do
   end
 
   def track_process(job_id) do
-    GenServer.cast(__MODULE__, {:track_process, self(), job_id})
+    GenServer.call(__MODULE__, {:track_process, job_id})
   end
 end
