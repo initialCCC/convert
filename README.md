@@ -9,6 +9,8 @@ To start your Phoenix server:
 
 A sample python client is provided for testing
 
+    python3 sample_client.py video_name.webm
+   
 # To get the status of a video
 
 
