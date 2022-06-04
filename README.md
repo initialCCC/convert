@@ -7,14 +7,34 @@ To start your Phoenix server:
 
 ## API Documentation
 
-The API currently supports two endpoints:
-* For uploading a video
+A sample python client is provided for testing
 
-post /
+# To get the status of a video
 
-* To get the status of a video
 
-get /:job_id
+* **Request:**
+ 
+  `GET  /:job_id`
+   
+* **URL Params:**
+
+   **Required:**
+   
+ 	`job_id=[alphanumerical]`
+
+
+# To upload a video
+
+* **Request:**
+ 
+  `POST  /`
+   
+* **Form data:**
+ 
+   **Required:**
+   
+ 	`video=webm video`
+
 
 
 ## TODO

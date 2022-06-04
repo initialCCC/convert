@@ -1,5 +1,5 @@
 defmodule ConvertWeb.Endpoint do
-  @max_upload_size Application.compile_env(:convert, :max_upload_size, 20_000_000)
+  @max_upload_size Application.compile_env(:convert, :max_upload_size) * 1_000_000
   use Phoenix.Endpoint, otp_app: :convert
 
   plug Plug.Telemetry, event_prefix: [:phoenix, :endpoint]

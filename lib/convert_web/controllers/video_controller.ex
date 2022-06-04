@@ -6,11 +6,15 @@ defmodule ConvertWeb.VideoController do
     {job_pid, job_id} = Convert.JobSupervisor.start_job(path)
 
     :ok = Plug.Upload.give_away(path, job_pid)
-    json(conn, %{job_id: job_id})
+    json(conn, %{status: %{job_id: job_id}})
   end
 
   def create(conn, _) do
-    json(conn, %{"status" => format_status(:system_overload)})
+    {status_code, formatted_status} = format_status(:system_overload)
+
+    conn
+    |> put_status(status_code)
+    |> json(%{status: formatted_status})
   end
 
   def show(conn, %{"job_id" => job_id}) do
@@ -21,11 +25,15 @@ defmodule ConvertWeb.VideoController do
         |> send_file(200, processed_path)
 
       status ->
-        json(conn, %{"status" => format_status(status)})
+        {status_code, formatted_status} = format_status(status)
+
+        conn
+        |> put_status(status_code)
+        |> json(%{status: formatted_status})
     end
   end
 
-  defp format_status(:pending), do: "file still converting"
-  defp format_status(:not_found), do: "file not found in the system"
-  defp format_status(:system_overload), do: "the system is at maximum capacity"
+  defp format_status(:pending), do: {200, "file still converting"}
+  defp format_status(:not_found), do: {404, "file not found in the system"}
+  defp format_status(:system_overload), do: {200, "the system is at maximum capacity"}
 end

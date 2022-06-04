@@ -18,7 +18,7 @@ defmodule Convert.Store do
 
   @impl true
   def handle_info({:DOWN, ref, _, _pid, :normal}, state) do
-    %{^ref => job_id} = state
+    {job_id, state} = Map.pop!(state, ref)
 
     [{_, processed_path}] = :ets.lookup(@table, job_id)
 
@@ -26,7 +26,7 @@ defmodule Convert.Store do
 
     File.rm!(processed_path)
 
-    {:noreply, Map.delete(state, ref)}
+    {:noreply, state}
   end
 
   @impl true

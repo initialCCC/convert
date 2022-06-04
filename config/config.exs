@@ -8,10 +8,8 @@
 import Config
 
 config :convert,
-  # maximum number of ffmpeg processes that can run at a time
-  capacity: 3,
-  # maximum file size defaults to 20_000_000
-  max_upload_size: 10_000_000,
+  capacity: 3, # maximum number of ffmpeg processes that can run at a time
+  max_upload_size: 10, # maximum file size in mega bytes
   ffmpeg_path: System.find_executable("ffmpeg"),
   converted_files_path: Path.expand("./converted_files/")
 
